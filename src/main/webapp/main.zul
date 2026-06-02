@@ -1,0 +1,87 @@
+<?page title="Template" contentType="text/html;charset=UTF-8"?>
+
+<zk>
+
+    <window
+            border="none"
+            width="100%"
+            height="100%"
+            viewModel="@id('vm')
+                       @init('com.rey.template.viewmodel.LayoutVM')">
+
+        <borderlayout height="100vh">
+
+            <!-- HEADER -->
+            <north size="60px" splittable="false">
+
+                <hlayout
+                        hflex="1"
+                        style="padding:15px;">
+
+                    <label
+                            value="ZK Template"
+                            style="font-size:20px;font-weight:bold;"/>
+
+                    <space hflex="1"/>
+
+                    <label
+                            value="@load(vm.fullName)"/>
+
+                    <separator orient="vertical"/>
+
+                    <label
+                            value="@load(vm.responsibility)"/>
+
+                </hlayout>
+
+            </north>
+
+            <!-- SIDEBAR -->
+            <west size="220px">
+
+                <vlayout
+                        spacing="5px"
+                        style="padding:10px;">
+
+                    <label
+                            value="MENU"
+                            style="font-weight:bold;"/>
+
+                    <vlayout
+                            children="@load(vm.menus)">
+
+                        <template name="children">
+
+                            <button
+                                    width="100%"
+                                    label="@load(each.name)"/>
+
+                        </template>
+
+                    </vlayout>
+
+                </vlayout>
+
+            </west>
+
+            <!-- CONTENT -->
+            <center>
+
+                <vlayout
+                        style="padding:20px;">
+
+                    <label
+                            value="Welcome"/>
+
+                    <label
+                            value="@load(vm.fullName)"/>
+
+                </vlayout>
+
+            </center>
+
+        </borderlayout>
+
+    </window>
+
+</zk>
