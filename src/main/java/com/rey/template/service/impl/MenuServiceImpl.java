@@ -2,6 +2,7 @@ package com.rey.template.service.impl;
 
 import com.rey.template.dto.MenuDTO;
 import com.rey.template.service.MenuService;
+import com.rey.template.util.UrlConstant;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,12 +22,12 @@ public class MenuServiceImpl implements MenuService {
                     new MenuDTO(
                             "HOME",
                             "Home",
-                            "/home.zul"
+                            UrlConstant.URL_HOME_ZUL
                     ),
                     new MenuDTO(
                             "REPORT",
                             "Report",
-                            "/report.zul"
+                            UrlConstant.URL_REPORT_ZUL
                     )
             );
         }
@@ -35,7 +36,7 @@ public class MenuServiceImpl implements MenuService {
                 new MenuDTO(
                         "HOME",
                         "Home",
-                        "/home.zul"
+                        UrlConstant.URL_HOME_ZUL
                 )
         );
     }

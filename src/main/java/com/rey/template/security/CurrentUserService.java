@@ -1,8 +1,8 @@
 package com.rey.template.security;
 
+import com.rey.template.dto.MenuDTO;
 import com.rey.template.dto.ResponsibilityDTO;
 import com.rey.template.service.MenuService;
-import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +13,9 @@ public class CurrentUserService {
 
     @Autowired
     private UserSession userSession;
+
+    @Autowired
+    private MenuService menuService;
 
     public void loginDummy() {
 
@@ -51,5 +54,42 @@ public class CurrentUserService {
 
     public String getCurrentUsername() {
         return userSession.getUsername();
+    }
+
+    public List<ResponsibilityDTO> getResponsibilities() {
+        return userSession.getResponsibilities();
+    }
+
+    public void changeResponsibility(String responsibilityCode) {
+
+        System.out.println("selected = " + responsibilityCode);
+
+        userSession.getResponsibilities()
+                .forEach(r ->
+                        System.out.println(
+                                r.getCode() + " | " + r.getName()
+                        ));
+
+        ResponsibilityDTO selected =
+                userSession.getResponsibilities()
+                        .stream()
+                        .filter(r -> r.getCode().equals(responsibilityCode))
+                        .findFirst()
+                        .orElseThrow();
+
+        userSession.setCurrentResponsibility(selected);
+    }
+
+    public boolean hasMenu(String menuId) {
+
+        List<MenuDTO> menus =
+                menuService.getMenus(
+                        getCurrentUsername(),
+                        getCurrentResponsibility().getCode()
+                );
+
+        return menus.stream()
+                .anyMatch(menu ->
+                        menu.getId().equals(menuId));
     }
 }

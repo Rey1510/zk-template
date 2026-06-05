@@ -29,8 +29,18 @@
 
                     <separator orient="vertical"/>
 
-                    <label
-                            value="@load(vm.responsibility)"/>
+                    <combobox
+                            model="@load(vm.responsibilities)"
+                            selectedItem="@bind(vm.selectedResponsibility)"
+                            onChange="@command('changeResponsibility')">
+
+                        <template name="model">
+
+                            <comboitem label="@load(each.name)"/>
+
+                        </template>
+
+                    </combobox>
 
                 </hlayout>
 
@@ -54,7 +64,8 @@
 
                             <button
                                     width="100%"
-                                    label="@load(each.name)"/>
+                                    label="@load(each.name)"
+                                    onClick="@command('openMenu', menu=each)"/>
 
                         </template>
 
@@ -67,16 +78,7 @@
             <!-- CONTENT -->
             <center>
 
-                <vlayout
-                        style="padding:20px;">
-
-                    <label
-                            value="Welcome"/>
-
-                    <label
-                            value="@load(vm.fullName)"/>
-
-                </vlayout>
+                <include src="@load(vm.currentPage)"/>
 
             </center>
 
