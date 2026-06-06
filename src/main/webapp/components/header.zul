@@ -1,0 +1,52 @@
+<zk>
+
+    <hlayout
+            hflex="1"
+            height="100%"
+            valign="middle"
+            sclass="astra-header">
+
+        <div
+                style="
+                background:white;
+                padding:4px 12px;
+                border-radius:4px;">
+
+            <image
+                    src="/images/custapp-logo.png"
+                    width="180px"
+                    height="50px"/>
+
+        </div>
+
+        <space hflex="1"/>
+
+        <label
+                value="@load(vm.fullName)"
+                sclass="header-user"/>
+
+        <separator orient="vertical"/>
+
+        <combobox
+                width="180px"
+                readonly="true"
+                model="@load(vm.responsibilities)"
+                selectedItem="@bind(vm.selectedResponsibility)"
+                onChange="@command('changeResponsibility')">
+
+            <template name="model">
+                <comboitem label="@load(each.name)"/>
+            </template>
+
+        </combobox>
+
+        <separator orient="vertical"/>
+
+        <label
+                value="Logout"
+                sclass="logout-link"
+                onClick="@command('logout')"/>
+
+    </hlayout>
+
+</zk>

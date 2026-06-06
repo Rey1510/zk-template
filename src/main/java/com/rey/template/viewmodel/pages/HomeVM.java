@@ -1,6 +1,6 @@
 package com.rey.template.viewmodel.pages;
 
-import com.rey.template.viewmodel.util.AuthorizedVM;
+import com.rey.template.viewmodel.common.AuthorizedVM;
 import org.zkoss.bind.annotation.Init;
 
 public class HomeVM extends AuthorizedVM {

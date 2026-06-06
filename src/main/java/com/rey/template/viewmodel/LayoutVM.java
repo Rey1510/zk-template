@@ -5,13 +5,14 @@ import com.rey.template.dto.ResponsibilityDTO;
 import com.rey.template.security.CurrentUserService;
 import com.rey.template.service.MenuService;
 import com.rey.template.util.UrlConstant;
-import com.rey.template.viewmodel.util.BaseVM;
+import com.rey.template.viewmodel.common.BaseVM;
 import lombok.Getter;
 import lombok.Setter;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zkplus.spring.DelegatingVariableResolver;
@@ -92,5 +93,15 @@ public class LayoutVM extends BaseVM {
             @BindingParam("menu") MenuDTO menu
     ) {
         currentPage = menu.getUrl();
+    }
+
+    @Command
+    public void logout() {
+
+        currentUserService.logout();
+
+        Executions.sendRedirect(
+                UrlConstant.URL_LOGIN_ZUL
+        );
     }
 }

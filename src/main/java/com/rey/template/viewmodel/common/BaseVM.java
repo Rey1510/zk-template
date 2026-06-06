@@ -1,4 +1,4 @@
-package com.rey.template.viewmodel.util;
+package com.rey.template.viewmodel.common;
 
 import com.rey.template.security.CurrentUserService;
 import org.zkoss.zk.ui.Executions;

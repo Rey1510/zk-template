@@ -1,8 +1,7 @@
-package com.rey.template.viewmodel.util;
+package com.rey.template.viewmodel.common;
 
 import com.rey.template.service.AuthorizationService;
 import com.rey.template.util.UrlConstant;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 

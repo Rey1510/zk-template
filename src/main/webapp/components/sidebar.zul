@@ -1,0 +1,28 @@
+<zk>
+
+    <vlayout
+            spacing="10px"
+            sclass="astra-sidebar">
+
+        <label
+                value="MENU"
+                sclass="menu-title"/>
+
+        <vlayout
+                children="@load(vm.menus)">
+
+            <template name="children">
+
+                <button
+                        width="100%"
+                        sclass="menu-button"
+                        label="@load(each.name)"
+                        onClick="@command('openMenu', menu=each)"/>
+
+            </template>
+
+        </vlayout>
+
+    </vlayout>
+
+</zk>

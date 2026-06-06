@@ -1,23 +1,127 @@
-<?page title="Report" contentType="text/html;charset=UTF-8"?>
+<window
+        border="none"
+        viewModel="@id('vm')
+                   @init('com.rey.template.viewmodel.pages.ReportVM')">
 
-<zk>
+    <style src="/css/report.css"/>
 
-    <window
-            border="none"
-            viewModel="@id('vm')
-                       @init('com.rey.template.viewmodel.pages.ReportVM')">
+    <vlayout spacing="15px">
 
-        <vlayout spacing="10px">
-
-            <label
-                    value="REPORT PAGE"
-                    style="font-size:20px;font-weight:bold;"/>
+        <!-- HEADER -->
+        <div sclass="report-header">
 
             <label
-                    value="Confidential Report"/>
+                    value="Report Dashboard"
+                    sclass="report-title"/>
 
-        </vlayout>
+            <label
+                    value="Monitoring report processing status"
+                    sclass="report-subtitle"/>
 
-    </window>
+        </div>
 
-</zk>
+        <!-- CHART CARD -->
+        <div sclass="dashboard-card">
+
+            <hlayout
+                    spacing="40px"
+                    valign="middle"
+                    style="justify-content:center;">
+
+                <html content="@load(vm.donutSvg)"/>
+
+                <vlayout
+                        spacing="10px"
+                        style="min-width:220px;">
+
+                    <div sclass="@load(vm.allStyle)"
+                         onClick="@command('showAll')">
+
+                        <hlayout valign="middle">
+                            <div sclass="legend-dot total-dot"/>
+                            <label value="@load(vm.totalLabel)"/>
+                        </hlayout>
+
+                    </div>
+
+                    <div sclass="@load(vm.successStyle)"
+                         onClick="@command('filter',status='SUCCESS')">
+
+                        <hlayout valign="middle">
+                            <div sclass="legend-dot success-dot"/>
+                            <label value="@load(vm.successLabel)"/>
+                        </hlayout>
+
+                    </div>
+
+                    <div sclass="@load(vm.pendingStyle)"
+                         onClick="@command('filter',status='PENDING')">
+
+                        <hlayout valign="middle">
+                            <div sclass="legend-dot pending-dot"/>
+                            <label value="@load(vm.pendingLabel)"/>
+                        </hlayout>
+
+                    </div>
+
+                    <div sclass="@load(vm.failedStyle)"
+                         onClick="@command('filter',status='FAILED')">
+
+                        <hlayout valign="middle">
+                            <div sclass="legend-dot failed-dot"/>
+                            <label value="@load(vm.failedLabel)"/>
+                        </hlayout>
+
+                    </div>
+
+                </vlayout>
+
+            </hlayout>
+
+        </div>
+
+        <separator bar="true"/>
+
+        <!-- TABLE CARD -->
+        <div sclass="dashboard-card">
+
+            <grid
+                    model="@load(vm.filteredReports)"
+                    sclass="modern-grid">
+
+                <columns>
+
+                    <column
+                            label="ID"
+                            width="100px"/>
+
+                    <column
+                            label="REPORT NAME"/>
+
+                    <column
+                            label="STATUS"
+                            width="150px"/>
+
+                </columns>
+
+                <template name="model">
+
+                    <row>
+
+                        <label value="@load(each.id)"/>
+
+                        <label value="@load(each.name)"/>
+
+                        <label value="@load(each.status)"/>
+
+                    </row>
+
+                </template>
+
+            </grid>
+
+        </div>
+
+    </vlayout>
+
+</window>

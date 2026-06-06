@@ -1,0 +1,182 @@
+.report-header {
+    padding-bottom: 5px;
+}
+
+.report-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.report-subtitle {
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.dashboard-card {
+
+    background: white;
+
+    border-radius: 14px;
+
+    padding: 20px;
+
+    box-shadow:
+            0 2px 8px rgba(0,0,0,.05);
+
+    border: 1px solid #eef2f7;
+}
+
+/* ===== LEGEND ===== */
+
+.legend-card {
+
+    padding: 14px 18px;
+
+    border: 1px solid #E2E8F0;
+
+    border-radius: 12px;
+
+    cursor: pointer;
+
+    transition: all .2s ease;
+
+    background: white;
+
+    min-width: 220px;
+}
+
+.legend-card:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow:
+            0 8px 24px rgba(15,23,42,.08);
+}
+
+.legend-selected {
+
+    border: 2px solid #3B82F6;
+
+    box-shadow:
+            0 10px 24px rgba(59,130,246,.15);
+
+    transform: translateY(-2px);
+}
+
+.legend-dimmed {
+
+    opacity: .45;
+
+    filter: grayscale(.15);
+}
+
+/* ===== TABLE ===== */
+
+.modern-grid {
+
+    width: 100%;
+
+    border: none;
+
+    background: white;
+}
+
+.modern-grid .z-column {
+
+    background: #F5F8FC;
+
+    border: none;
+
+    border-bottom: 2px solid #DCE6F2;
+}
+
+.modern-grid .z-column-content {
+
+    color: #0054A6;
+
+    font-weight: 600;
+
+    font-size: 13px;
+
+    text-transform: uppercase;
+}
+
+.modern-grid .z-row {
+
+    transition: all .2s ease;
+}
+
+.modern-grid .z-row:hover {
+
+    background: #F7FBFF;
+}
+
+.modern-grid .z-row-content {
+
+    height: 46px;
+
+    border-bottom: 1px solid #EEF2F7;
+}
+
+.modern-grid .z-cell {
+
+    border: none !important;
+}
+
+.report-donut {
+    overflow: visible;
+}
+
+.report-donut .donut-segment {
+
+    animation: donutGrow .8s ease-out;
+
+    transform-origin: center;
+}
+
+@keyframes donutGrow {
+
+    from {
+
+        opacity: 0;
+
+        transform: scale(.85);
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform: scale(1);
+    }
+}
+
+.legend-dot {
+
+    width: 12px;
+
+    height: 12px;
+
+    border-radius: 50%;
+
+    margin-right: 10px;
+
+    flex-shrink: 0;
+}
+
+.success-dot {
+    background: #7FC8A9;
+}
+
+.pending-dot {
+    background: #F2CC8F;
+}
+
+.failed-dot {
+    background: #E5989B;
+}
+
+.total-dot {
+    background: #A5B4FC;
+}

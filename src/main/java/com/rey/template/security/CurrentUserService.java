@@ -17,7 +17,7 @@ public class CurrentUserService {
     @Autowired
     private MenuService menuService;
 
-    public void loginDummy() {
+    public void loginAsAdmin() {
 
         userSession.setUsername("REY");
         userSession.setFullName("Reynard A");
@@ -25,6 +25,23 @@ public class CurrentUserService {
         userSession.setResponsibilities(
                 List.of(
                         new ResponsibilityDTO("ADMIN", "Administrator"),
+                        new ResponsibilityDTO("MAKER", "Maker")
+                )
+        );
+
+        userSession.setCurrentResponsibility(
+                userSession.getResponsibilities().getFirst()
+        );
+
+    }
+
+    public void loginAsMaker() {
+
+        userSession.setUsername("REY Maker");
+        userSession.setFullName("Reynard Maker");
+
+        userSession.setResponsibilities(
+                List.of(
                         new ResponsibilityDTO("MAKER", "Maker")
                 )
         );
@@ -44,8 +61,12 @@ public class CurrentUserService {
     }
 
     public void logout() {
+
         userSession.setUsername(null);
         userSession.setFullName(null);
+
+        userSession.setResponsibilities(null);
+        userSession.setCurrentResponsibility(null);
     }
 
     public ResponsibilityDTO getCurrentResponsibility() {

@@ -1,6 +1,7 @@
 package com.rey.template.viewmodel;
 
 import com.rey.template.security.CurrentUserService;
+import com.rey.template.util.UrlConstant;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.zk.ui.Executions;
@@ -19,16 +20,24 @@ public class LoginVM {
 
         if (currentUserService.isLoggedIn()) {
 
-            Executions.sendRedirect("/main.zul");
+            Executions.getCurrent().sendRedirect(UrlConstant.URL_MAIN_ZUL);
 
         }
     }
 
     @Command
-    public void login() {
+    public void loginAsAdmin() {
 
-        currentUserService.loginDummy();
+        currentUserService.loginAsAdmin();
 
-        Executions.sendRedirect("/main.zul");
+        Executions.sendRedirect(UrlConstant.URL_MAIN_ZUL);
+    }
+
+    @Command
+    public void loginAsMaker() {
+
+        currentUserService.loginAsMaker();
+
+        Executions.sendRedirect(UrlConstant.URL_MAIN_ZUL);
     }
 }
