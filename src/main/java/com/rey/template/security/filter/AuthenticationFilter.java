@@ -29,11 +29,6 @@ public class AuthenticationFilter implements Filter {
 
         String uri = req.getRequestURI();
 
-        System.out.println(
-                "URI=" + uri
-                        + ", loggedIn=" + currentUserService.isLoggedIn()
-        );
-
         boolean loginPage = uri.endsWith(UrlConstant.URL_LOGIN_ZUL);
 
         boolean staticResource =

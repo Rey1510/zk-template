@@ -26,16 +26,14 @@ public class ReportVM extends AuthorizedVM {
     public void init() {
 
         validatePage(
-                UrlConstant.URL_REPORT_ZUL
-        );
+                UrlConstant.URL_REPORT_ZUL);
 
         reports = List.of(
                 new ReportDTO(1L, "Report A", Status.SUCCESS),
                 new ReportDTO(2L, "Report B", Status.SUCCESS),
                 new ReportDTO(3L, "Report C", Status.PENDING),
                 new ReportDTO(4L, "Report D", Status.PENDING),
-                new ReportDTO(5L, "Report E", Status.FAILED)
-        );
+                new ReportDTO(5L, "Report E", Status.FAILED));
 
         filteredReports = reports;
     }
@@ -52,9 +50,7 @@ public class ReportVM extends AuthorizedVM {
             "allStyle"
     })
     public void filter(
-            @BindingParam("status")
-            String status
-    ) {
+            @BindingParam("status") String status) {
 
         Status clicked = Status.valueOf(status);
 
@@ -68,10 +64,9 @@ public class ReportVM extends AuthorizedVM {
 
         selectedStatus = clicked;
 
-        filteredReports =
-                reports.stream()
-                        .filter(r -> r.getStatus() == selectedStatus)
-                        .toList();
+        filteredReports = reports.stream()
+                .filter(r -> r.getStatus() == selectedStatus)
+                .toList();
     }
 
     @Command
@@ -142,6 +137,10 @@ public class ReportVM extends AuthorizedVM {
         double s1 = success;
         double s2 = success + pending;
 
+        String successClass = segmentClass(Status.SUCCESS);
+        String pendingClass = segmentClass(Status.PENDING);
+        String failedClass  = segmentClass(Status.FAILED);
+
         return """
     <svg class='report-donut'
          width='260'
@@ -173,7 +172,7 @@ public class ReportVM extends AuthorizedVM {
         <!-- Success -->
 
         <circle
-            class='donut-segment'
+            class='donut-segment %s'
             cx='21'
             cy='21'
             r='15.915'
@@ -188,7 +187,7 @@ public class ReportVM extends AuthorizedVM {
         <!-- Pending -->
 
         <circle
-            class='donut-segment'
+            class='donut-segment %s'
             cx='21'
             cy='21'
             r='15.915'
@@ -203,7 +202,7 @@ public class ReportVM extends AuthorizedVM {
         <!-- Failed -->
 
         <circle
-            class='donut-segment'
+            class='donut-segment %s'
             cx='21'
             cy='21'
             r='15.915'
@@ -246,13 +245,16 @@ public class ReportVM extends AuthorizedVM {
     </svg>
     """.formatted(
 
+                successClass,
                 success,
                 100 - success,
 
+                pendingClass,
                 pending,
                 100 - pending,
                 25 - s1,
 
+                failedClass,
                 failed,
                 100 - failed,
                 25 - s2,
@@ -260,6 +262,25 @@ public class ReportVM extends AuthorizedVM {
                 getCenterValue(),
                 getCenterLabel()
         );
+    }
+
+    /**
+     * Returns the extra CSS class for a donut segment based on the current filter selection.
+     * <ul>
+     *   <li>No filter active  → no extra class (normal appearance)</li>
+     *   <li>This segment is selected → {@code donut-active} (thicker, full opacity)</li>
+     *   <li>Another segment is selected → {@code donut-inactive} (thinner, dimmed)</li>
+     * </ul>
+     */
+    private String segmentClass(Status segment) {
+
+        if (selectedStatus == null) {
+            return "";
+        }
+
+        return selectedStatus == segment
+                ? "donut-active"
+                : "donut-inactive";
     }
 
     private double percentage(long count) {
