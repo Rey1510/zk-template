@@ -29,6 +29,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private RelUserRoleRepository userRoleRepository;
 
+    @Autowired
+    private com.rey.template.security.PasswordHelper passwordHelper;
+
     @jakarta.persistence.PersistenceContext
     private jakarta.persistence.EntityManager entityManager;
 
@@ -80,7 +83,13 @@ public class UserServiceImpl implements UserService {
         user.setUsername(dto.getUsername());
         user.setFullName(dto.getFullName());
         user.setEmail(dto.getEmail());
-        user.setPassword(dto.getPassword());
+        if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
+            if (dto.getPassword().startsWith("$2a$") || dto.getPassword().startsWith("$2b$") || dto.getPassword().startsWith("$2y$")) {
+                user.setPassword(dto.getPassword());
+            } else {
+                user.setPassword(passwordHelper.encode(dto.getPassword()));
+            }
+        }
         user.setActive(dto.getActive());
 
         MstUser savedUser = userRepository.saveAndFlush(user);

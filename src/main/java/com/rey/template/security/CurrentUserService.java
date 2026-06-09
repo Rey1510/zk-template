@@ -26,6 +26,9 @@ public class CurrentUserService {
     @Autowired
     private MenuService menuService;
 
+    @Autowired
+    private PasswordHelper passwordHelper;
+
     public void login(String username, String password) {
         if (username == null || username.trim().isEmpty() || password == null || password.trim().isEmpty()) {
             throw new RuntimeException("Username and password cannot be empty");
@@ -34,7 +37,7 @@ public class CurrentUserService {
         var mstUser = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if (!mstUser.getPassword().equals(password)) {
+        if (!passwordHelper.matches(password, mstUser.getPassword())) {
             throw new RuntimeException("Incorrect password");
         }
 
