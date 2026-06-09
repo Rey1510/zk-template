@@ -1,3 +1,39 @@
+/* =========================================
+   THEMES (Cascading Custom Variables)
+   ========================================= */
+.theme-fifgroup {
+    --primary-color: #0c6291;
+    --primary-grad-start: #0c6291;
+    --primary-grad-end: #00a8e8;
+    --primary-shadow: rgba(12, 98, 145, 0.3);
+    --primary-shadow-hover: rgba(12, 98, 145, 0.4);
+    --primary-shadow-focus: rgba(12, 98, 145, 0.15);
+    --primary-border-light: #b3d7ff;
+    --primary-bg-hover: #EAF3FF;
+}
+
+.theme-spektra {
+    --primary-color: #c21e1e;
+    --primary-grad-start: #c21e1e;
+    --primary-grad-end: #f3a01c;
+    --primary-shadow: rgba(194, 30, 30, 0.3);
+    --primary-shadow-hover: rgba(194, 30, 30, 0.4);
+    --primary-shadow-focus: rgba(194, 30, 30, 0.15);
+    --primary-border-light: #ffccd5;
+    --primary-bg-hover: #FFEAEA;
+}
+
+.theme-amitra {
+    --primary-color: #0c5a30;
+    --primary-grad-start: #0c5a30;
+    --primary-grad-end: #8dc63f;
+    --primary-shadow: rgba(12, 90, 48, 0.3);
+    --primary-shadow-hover: rgba(12, 90, 48, 0.4);
+    --primary-shadow-focus: rgba(12, 90, 48, 0.15);
+    --primary-border-light: #c2f0c2;
+    --primary-bg-hover: #EAFEEA;
+}
+
 .astra-header {
     width: 100%;
     height: 100%;
@@ -5,85 +41,58 @@
 
 .astra-sidebar {
     height: 100%;
-
     background: #F5F8FC;
-
     padding: 15px;
-
     border-right: 1px solid #D6E0EE;
 }
 
 .menu-title {
-    color: #0054A6;
+    color: var(--primary-color, #0054A6);
     font-weight: bold;
     font-size: 14px;
 }
 
 .z-button.menu-button {
-
     width: 100%;
-
     text-align: left;
-
     background: white;
-
     border: 1px solid #D6E0EE;
-
     border-radius: 8px;
-
     padding: 8px;
-
-    color: #0054A6;
+    color: var(--primary-color, #0054A6);
 }
 
 .z-button.menu-button:hover {
-
-    background: #EAF3FF;
-
-    border-color: #0054A6;
+    background: var(--primary-bg-hover, #EAF3FF);
+    border-color: var(--primary-color, #0054A6);
 }
 
 .logout-link {
-
     color: #FFDADA;
-
     cursor: pointer;
-
     font-weight: bold;
 }
 
 .logout-link:hover {
-
     text-decoration: underline;
 }
 
 .header-user {
-
     font-weight: bold;
 }
 
 .welcome-card {
-
     background: white;
-
     padding: 30px;
-
     border-radius: 12px;
-
     border: 1px solid #E3EAF3;
-
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
 .feature-card {
-
     background: white;
-
     padding: 20px;
-
     border-radius: 10px;
-
     border: 1px solid #E3EAF3;
-
     min-height: 120px;
 }

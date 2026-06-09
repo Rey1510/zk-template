@@ -14,4 +14,12 @@ public interface RelRoleMenuRepository extends JpaRepository<RelRoleMenu, Long> 
 
     @Query("SELECT rm.menu FROM RelRoleMenu rm WHERE rm.role.roleCode = :roleCode AND rm.menu.active = true ORDER BY rm.menu.menuOrder ASC")
     List<MstMenu> findMenusByRoleCode(@Param("roleCode") String roleCode);
+
+    List<RelRoleMenu> findByMenuMenuId(Long menuId);
+
+    void deleteByMenuMenuId(Long menuId);
+
+    List<RelRoleMenu> findByRoleRoleId(Long roleId);
+
+    void deleteByRoleRoleId(Long roleId);
 }

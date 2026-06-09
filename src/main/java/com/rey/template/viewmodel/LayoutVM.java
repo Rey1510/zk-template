@@ -42,6 +42,8 @@ public class LayoutVM extends BaseVM {
 
     private String currentPage = UrlConstant.URL_WELCOME_ZUL;
 
+    private String activeTheme = "fifgroup";
+
     @Init
     public void init() {
 
@@ -53,30 +55,29 @@ public class LayoutVM extends BaseVM {
 
         responsibilities = currentUserService.getResponsibilities();
 
-        selectedResponsibility =
-                currentUserService.getCurrentResponsibility();
+        selectedResponsibility = currentUserService.getCurrentResponsibility();
 
         menus = menuService.getMenus(
                 currentUserService.getCurrentUsername(),
                 currentUserService
                         .getCurrentResponsibility()
-                        .getCode()
-        );
+                        .getCode());
 
         loadMenu();
+        System.out.println("LAYOUTVM INIT - RESPONSIBILITY CODE: " + (selectedResponsibility != null ? selectedResponsibility.getCode() : "null"));
     }
 
     @Command
     @NotifyChange({
             "menus",
             "responsibility",
-            "selectedResponsibility"
+            "selectedResponsibility",
+            "admin"
     })
     public void changeResponsibility() {
 
         currentUserService.changeResponsibility(
-                selectedResponsibility.getCode()
-        );
+                selectedResponsibility.getCode());
 
         loadMenu();
     }
@@ -90,8 +91,7 @@ public class LayoutVM extends BaseVM {
     @Command
     @NotifyChange("currentPage")
     public void openMenu(
-            @BindingParam("menu") MenuDTO menu
-    ) {
+            @BindingParam("menu") MenuDTO menu) {
         currentPage = menu.getUrl();
     }
 
@@ -101,7 +101,26 @@ public class LayoutVM extends BaseVM {
         currentUserService.logout();
 
         Executions.sendRedirect(
-                UrlConstant.URL_LOGIN_ZUL
-        );
+                UrlConstant.URL_LOGIN_ZUL);
+    }
+
+    @Command
+    @NotifyChange("activeThemeClass")
+    public void changeTheme(@BindingParam("theme") String theme) {
+        System.out.println("CHANGE THEME COMMAND INVOKED - theme: " + theme);
+        this.activeTheme = theme;
+        System.out.println("activeTheme updated to: " + this.activeTheme + ", class: " + getActiveThemeClass());
+    }
+
+    public String getActiveThemeClass() {
+        return "theme-" + activeTheme;
+    }
+
+    public boolean isAdmin() {
+        return selectedResponsibility != null && "ADMIN".equals(selectedResponsibility.getCode());
+    }
+
+    public boolean getAdmin() {
+        return isAdmin();
     }
 }

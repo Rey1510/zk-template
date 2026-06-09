@@ -197,7 +197,7 @@ body,
 
 .btn-primary {
     padding: 8px 18px;
-    background: linear-gradient(135deg, #6366f1, #818cf8);
+    background: linear-gradient(135deg, var(--primary-grad-start, #6366f1), var(--primary-grad-end, #818cf8));
     color: #fff !important;
     border: none;
     border-radius: 10px;
@@ -205,12 +205,12 @@ body,
     font-weight: 600;
     cursor: pointer;
     transition: transform .15s ease, box-shadow .15s ease;
-    box-shadow: 0 3px 10px rgba(99, 102, 241, .30);
+    box-shadow: 0 3px 10px var(--primary-shadow, rgba(99, 102, 241, .30));
 }
 
 .btn-primary:hover {
     transform: translateY(-1px);
-    box-shadow: 0 5px 16px rgba(99, 102, 241, .40);
+    box-shadow: 0 5px 16px var(--primary-shadow-hover, rgba(99, 102, 241, .40));
 }
 
 .btn-outline {
@@ -226,8 +226,8 @@ body,
 }
 
 .btn-outline:hover {
-    border-color: #6366f1;
-    color: #6366f1;
+    border-color: var(--primary-color, #6366f1);
+    color: var(--primary-color, #6366f1);
     background: #f5f5ff;
 }
 
@@ -250,8 +250,8 @@ body,
 
 .btn-sm.btn-outline:hover {
     background: #e0e7ff;
-    color: #6366f1;
-    border-color: #c7d2fe;
+    color: var(--primary-color, #6366f1);
+    border-color: var(--primary-border-light, #c7d2fe);
 }
 
 .btn-sm.btn-danger {
@@ -395,7 +395,7 @@ body,
 }
 
 .crud-modal .z-window-header {
-    background: linear-gradient(135deg, #6366f1, #818cf8) !important;
+    background: linear-gradient(135deg, var(--primary-grad-start, #6366f1), var(--primary-grad-end, #818cf8)) !important;
     color: #fff !important;
     font-weight: 600;
     font-size: 15px;
@@ -440,7 +440,40 @@ body,
 }
 
 .form-input:focus {
-    border-color: #6366f1 !important;
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, .15) !important;
+    border-color: var(--primary-color, #6366f1) !important;
+    box-shadow: 0 0 0 3px var(--primary-shadow-focus, rgba(99, 102, 241, .15)) !important;
     outline: none;
+}
+
+/* =========================================
+   THEMES (Cascading Custom Variables)
+   ========================================= */
+.theme-fifgroup {
+    --primary-color: #0c6291;
+    --primary-grad-start: #0c6291;
+    --primary-grad-end: #00a8e8;
+    --primary-shadow: rgba(12, 98, 145, 0.3);
+    --primary-shadow-hover: rgba(12, 98, 145, 0.4);
+    --primary-shadow-focus: rgba(12, 98, 145, 0.15);
+    --primary-border-light: #b3d7ff;
+}
+
+.theme-spektra {
+    --primary-color: #c21e1e;
+    --primary-grad-start: #c21e1e;
+    --primary-grad-end: #f3a01c;
+    --primary-shadow: rgba(194, 30, 30, 0.3);
+    --primary-shadow-hover: rgba(194, 30, 30, 0.4);
+    --primary-shadow-focus: rgba(194, 30, 30, 0.15);
+    --primary-border-light: #ffccd5;
+}
+
+.theme-amitra {
+    --primary-color: #0c5a30;
+    --primary-grad-start: #0c5a30;
+    --primary-grad-end: #8dc63f;
+    --primary-shadow: rgba(12, 90, 48, 0.3);
+    --primary-shadow-hover: rgba(12, 90, 48, 0.4);
+    --primary-shadow-focus: rgba(12, 90, 48, 0.15);
+    --primary-border-light: #c2f0c2;
 }

@@ -130,7 +130,7 @@
             border="normal"
             mode="modal"
             closable="true"
-            onClose="event.stopPropagation(); binder.postCommand('cancelForm', null);"
+            onClose="event.stopPropagation(); binder.postCommand(&quot;cancelForm&quot;, null);"
             sclass="crud-modal"
             style="width:420px;">
 

@@ -1,52 +1,32 @@
 <zk>
-
-    <hlayout
-            hflex="1"
-            height="100%"
-            valign="middle"
-            sclass="astra-header">
-
-        <div
-                style="
+    <hlayout hflex="1" height="100%" valign="middle" sclass="astra-header">
+        <div style="
                 background:white;
                 padding:4px 12px;
                 border-radius:4px;">
-
-            <image
-                    src="/images/custapp-logo.png"
-                    width="180px"
-                    height="50px"/>
-
+            <image src="/images/custapp-logo.png" width="180px" height="50px"/>
         </div>
-
         <space hflex="1"/>
-
-        <label
-                value="@load(vm.fullName)"
-                sclass="header-user"/>
-
+        <hlayout visible="@load(vm.admin)" spacing="8px" valign="middle" style="margin-right: 15px;">
+            <label value="Theme:" style="font-weight: 600; font-size: 13px; color: #475569;"/>
+            <div onClick="@command('changeTheme',theme='fifgroup')" 
+                 tooltiptext="FIFGROUP (Blue)"
+                 style="width: 18px; height: 18px; border-radius: 50%; background: linear-gradient(135deg, #0c6291, #00a8e8); border: 2px solid #fff; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.25);"/>
+            <div onClick="@command('changeTheme',theme='spektra')" 
+                 tooltiptext="SPEKTRA (Red/Orange)"
+                 style="width: 18px; height: 18px; border-radius: 50%; background: linear-gradient(135deg, #c21e1e, #f3a01c); border: 2px solid #fff; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.25);"/>
+            <div onClick="@command('changeTheme',theme='amitra')" 
+                 tooltiptext="AMITRA (Green)"
+                 style="width: 18px; height: 18px; border-radius: 50%; background: linear-gradient(135deg, #0c5a30, #8dc63f); border: 2px solid #fff; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.25);"/>
+        </hlayout>
+        <label value="@load(vm.fullName)" sclass="header-user"/>
         <separator orient="vertical"/>
-
-        <combobox
-                width="180px"
-                readonly="true"
-                model="@load(vm.responsibilities)"
-                selectedItem="@bind(vm.selectedResponsibility)"
-                onChange="@command('changeResponsibility')">
-
+        <combobox width="180px" readonly="true" model="@load(vm.responsibilities)" selectedItem="@bind(vm.selectedResponsibility)" onChange="@command(&apos;changeResponsibility&apos;)">
             <template name="model">
                 <comboitem label="@load(each.name)"/>
             </template>
-
         </combobox>
-
         <separator orient="vertical"/>
-
-        <label
-                value="Logout"
-                sclass="logout-link"
-                onClick="@command('logout')"/>
-
+        <label value="Logout" sclass="logout-link" onClick="@command(&apos;logout&apos;)"/>
     </hlayout>
-
 </zk>
