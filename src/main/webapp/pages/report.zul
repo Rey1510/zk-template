@@ -1,121 +1,119 @@
-<window
-        border="none"
+<?xml version="1.0" encoding="UTF-8"?>
+<window border="none"
+        vflex="1"
+        style="height:100vh;box-sizing:border-box;padding:16px;"
         viewModel="@id('vm')
                    @init('com.rey.template.viewmodel.pages.ReportVM')">
 
     <style src="/css/report.css"/>
 
-    <vlayout spacing="15px">
+    <vlayout spacing="10px" vflex="1" style="height:100%;">
 
-        <!-- HEADER -->
+        <!-- ======================================================
+             HEADER  (compact single row)
+        ======================================================= -->
         <div sclass="report-header">
-
-            <label
-                    value="Report Dashboard"
-                    sclass="report-title"/>
-
-            <label
-                    value="Monitoring report processing status"
-                    sclass="report-subtitle"/>
-
+            <hlayout valign="middle" style="justify-content:space-between;">
+                <vlayout spacing="0px">
+                    <label value="Report Dashboard" sclass="report-title"/>
+                    <label value="Monitoring report processing status" sclass="report-subtitle"/>
+                </vlayout>
+            </hlayout>
         </div>
 
-        <!-- CHART CARD -->
-        <div sclass="dashboard-card">
+        <!-- ======================================================
+             CHART CARD  (compact horizontal strip)
+        ======================================================= -->
+        <div sclass="dashboard-card chart-card">
+            <hlayout spacing="24px" valign="middle" sclass="chart-section">
 
-            <hlayout
-                    spacing="40px"
-                    valign="middle"
-                    style="justify-content:center;">
-
+                <!-- Donut (smaller) -->
                 <html content="@load(vm.donutSvg)"/>
 
-                <vlayout
-                        spacing="10px"
-                        style="min-width:220px;">
+                <!-- Separator -->
+                <div sclass="chart-divider"/>
 
-                    <div sclass="@load(vm.allStyle)"
-                         onClick="@command('showAll')">
+                <!-- Legend pills in a row -->
+                <hlayout spacing="10px" valign="middle" sclass="legend-row">
 
-                        <hlayout valign="middle">
+                    <div sclass="@load(vm.allStyle)" onClick="@command('showAll')">
+                        <hlayout valign="middle" spacing="6px">
                             <div sclass="legend-dot total-dot"/>
-                            <label value="@load(vm.totalLabel)"/>
+                            <label value="@load(vm.totalLabel)" sclass="legend-label"/>
                         </hlayout>
-
                     </div>
 
                     <div sclass="@load(vm.successStyle)"
                          onClick="@command('filter',status='SUCCESS')">
-
-                        <hlayout valign="middle">
+                        <hlayout valign="middle" spacing="6px">
                             <div sclass="legend-dot success-dot"/>
-                            <label value="@load(vm.successLabel)"/>
+                            <label value="@load(vm.successLabel)" sclass="legend-label"/>
                         </hlayout>
-
                     </div>
 
                     <div sclass="@load(vm.pendingStyle)"
                          onClick="@command('filter',status='PENDING')">
-
-                        <hlayout valign="middle">
+                        <hlayout valign="middle" spacing="6px">
                             <div sclass="legend-dot pending-dot"/>
-                            <label value="@load(vm.pendingLabel)"/>
+                            <label value="@load(vm.pendingLabel)" sclass="legend-label"/>
                         </hlayout>
-
                     </div>
 
                     <div sclass="@load(vm.failedStyle)"
                          onClick="@command('filter',status='FAILED')">
-
-                        <hlayout valign="middle">
+                        <hlayout valign="middle" spacing="6px">
                             <div sclass="legend-dot failed-dot"/>
-                            <label value="@load(vm.failedLabel)"/>
+                            <label value="@load(vm.failedLabel)" sclass="legend-label"/>
                         </hlayout>
-
                     </div>
 
-                </vlayout>
-
+                </hlayout>
             </hlayout>
-
         </div>
 
-        <separator bar="true"/>
+        <!-- ======================================================
+             TABLE CARD  (flex-grows to fill remaining space)
+        ======================================================= -->
+        <div sclass="dashboard-card table-card" vflex="1">
 
-        <!-- TABLE CARD -->
-        <div sclass="dashboard-card">
+            <!-- Toolbar -->
+            <div sclass="table-toolbar">
+                <label value="Reports" sclass="table-title"/>
+                <button label="+ Add Report"
+                        sclass="btn-primary"
+                        onClick="@command('openAdd')"/>
+            </div>
 
-            <grid
-                    model="@load(vm.filteredReports)"
-                    sclass="modern-grid">
+            <grid model="@load(vm.filteredReports)"
+                  mold="paging"
+                  pageSize="5"
+                  vflex="1"
+                  sclass="modern-grid">
 
                 <columns>
-
-                    <column
-                            label="ID"
-                            width="100px"/>
-
-                    <column
-                            label="REPORT NAME"/>
-
-                    <column
-                            label="STATUS"
-                            width="150px"/>
-
+                    <column label="ID"          width="70px"/>
+                    <column label="REPORT NAME"/>
+                    <column label="STATUS"       width="130px"/>
+                    <column label="ACTIONS"      width="140px"/>
                 </columns>
 
-                <template name="model">
-
-                    <row>
-
-                        <label value="@load(each.id)"/>
-
-                        <label value="@load(each.name)"/>
-
-                        <label value="@load(each.status)"/>
-
+                <template name="model" var="row">
+                    <row sclass="grid-row">
+                        <label value="@load(row.id)"/>
+                        <label value="@load(row.name)" sclass="report-name-cell"/>
+                        <div sclass="@load(row.status, converter='com.rey.template.util.StatusBadgeConverter')">
+                            <span sclass="@load(row.status, converter='com.rey.template.util.StatusIconConverter')"/>
+                            <label value="@load(row.status)"/>
+                        </div>
+                        <hlayout spacing="6px">
+                            <button label="Edit"
+                                    sclass="btn-sm btn-outline"
+                                    onClick="@command('openEdit', dto=row)"/>
+                            <button iconSclass="z-icon-trash-o"
+                                    sclass="btn-sm btn-danger"
+                                    onClick="@command('deleteReport', id=row.id)"/>
+                        </hlayout>
                     </row>
-
                 </template>
 
             </grid>
@@ -123,5 +121,56 @@
         </div>
 
     </vlayout>
+
+    <!-- ======================================================
+         ADD / EDIT MODAL
+    ======================================================= -->
+    <window visible="@load(vm.showForm)"
+            title="@load(vm.formReport.id, converter='com.rey.template.util.FormTitleConverter')"
+            border="normal"
+            mode="modal"
+            closable="true"
+            onClose="event.stopPropagation(); binder.postCommand('cancelForm', null);"
+            sclass="crud-modal"
+            style="width:420px;">
+
+        <vlayout spacing="0px" sclass="modal-body">
+
+            <div sclass="form-group">
+                <label value="Report Name" sclass="form-label"/>
+                <textbox value="@bind(vm.formReport.name)"
+                         placeholder="Enter report name"
+                         sclass="form-input"
+                         width="100%"
+                         id="nameInput"/>
+            </div>
+
+            <div sclass="form-group">
+                <label value="Status" sclass="form-label"/>
+                <combobox model="@load(vm.statusValues)"
+                          selectedItem="@bind(vm.formReport.status)"
+                          readonly="true"
+                          sclass="form-input"
+                          width="100%">
+                    <template name="model" var="s">
+                        <comboitem label="@load(s.name())" value="@load(s)"/>
+                    </template>
+                </combobox>
+            </div>
+
+            <separator/>
+
+            <hlayout spacing="10px" style="justify-content:flex-end;padding-top:8px;">
+                <button label="Cancel"
+                        sclass="btn-outline"
+                        onClick="@command('cancelForm')"/>
+                <button label="Save"
+                        sclass="btn-primary"
+                        onClick="@command('saveReport')"/>
+            </hlayout>
+
+        </vlayout>
+
+    </window>
 
 </window>

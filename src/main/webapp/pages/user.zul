@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window border="none"
+        vflex="1"
+        style="height:100vh;box-sizing:border-box;padding:16px;"
+        viewModel="@id('vm')
+                   @init('com.rey.template.viewmodel.pages.UserVM')">
+
+    <style src="/css/report.css"/>
+
+    <vlayout spacing="10px" vflex="1" style="height:100%;">
+
+        <!-- ======================================================
+             HEADER  (compact single row)
+             ======================================================= -->
+        <div sclass="report-header">
+            <hlayout valign="middle" style="justify-content:space-between;">
+                <vlayout spacing="0px">
+                    <label value="User Management" sclass="report-title"/>
+                    <label value="Manage system user accounts, profiles, and role assignments" sclass="report-subtitle"/>
+                </vlayout>
+            </hlayout>
+        </div>
+
+        <!-- ======================================================
+             FILTER & TOOLBAR CARD
+             ======================================================= -->
+        <div sclass="dashboard-card chart-card">
+            <hlayout spacing="20px" valign="middle" style="justify-content:space-between; width:100%;">
+                <hlayout spacing="10px" valign="middle">
+                    <textbox value="@bind(vm.searchKeyword)"
+                             placeholder="Search username, name, or email..."
+                             sclass="form-input"
+                             width="280px"
+                             onOK="@command('search')"/>
+                    <button label="Search"
+                            sclass="btn-outline"
+                            onClick="@command('search')"
+                            iconSclass="z-icon-search"/>
+                </hlayout>
+                <button label="+ Add User"
+                        sclass="btn-primary"
+                        onClick="@command('openAdd')"/>
+            </hlayout>
+        </div>
+
+        <!-- ======================================================
+             TABLE CARD  (flex-grows to fill remaining space)
+             ======================================================= -->
+        <div sclass="dashboard-card table-card" vflex="1">
+            <grid model="@load(vm.filteredUsers)"
+                  mold="paging"
+                  pageSize="5"
+                  vflex="1"
+                  sclass="modern-grid">
+
+                <columns>
+                    <column label="ID"          width="60px"/>
+                    <column label="USERNAME"    width="140px"/>
+                    <column label="FULL NAME"/>
+                    <column label="EMAIL"/>
+                    <column label="ROLES"       width="180px"/>
+                    <column label="STATUS"      width="110px"/>
+                    <column label="ACTIONS"     width="140px"/>
+                </columns>
+
+                <template name="model" var="row">
+                    <row sclass="grid-row">
+                        <label value="@load(row.id)"/>
+                        <label value="@load(row.username)" sclass="report-name-cell"/>
+                        <label value="@load(row.fullName)"/>
+                        <label value="@load(row.email)"/>
+                        <label value="@load(row.rolesDisplay)" style="font-size: 11px; font-weight: 500; color: #475569;"/>
+                        <div>
+                            <!-- Reusable badge class based on status -->
+                            <span sclass="@load(row.active ? 'status-badge badge-success' : 'status-badge badge-failed')">
+                                <span sclass="@load(row.active ? 'z-icon-check' : 'z-icon-times')"/>
+                                <label value="@load(row.active ? 'ACTIVE' : 'INACTIVE')"/>
+                            </span>
+                        </div>
+                        <hlayout spacing="6px">
+                            <button label="Edit"
+                                    sclass="btn-sm btn-outline"
+                                    onClick="@command('openEdit', dto=row)"/>
+                            <button iconSclass="z-icon-trash-o"
+                                    sclass="btn-sm btn-danger"
+                                    onClick="@command('deleteUser', id=row.id)"/>
+                        </hlayout>
+                    </row>
+                </template>
+
+            </grid>
+        </div>
+
+    </vlayout>
+
+    <!-- ======================================================
+         ADD / EDIT MODAL
+         ======================================================= -->
+    <window visible="@load(vm.showForm)"
+            title="@load(vm.formUser.id eq null ? 'Add User' : 'Edit User')"
+            border="normal"
+            mode="modal"
+            closable="true"
+            onClose="event.stopPropagation(); binder.postCommand('cancelForm', null);"
+            sclass="crud-modal"
+            style="width:450px;">
+
+        <vlayout spacing="0px" sclass="modal-body">
+
+            <div sclass="form-group">
+                <label value="Username" sclass="form-label"/>
+                <textbox value="@bind(vm.formUser.username)"
+                         placeholder="Enter unique username"
+                         sclass="form-input"
+                         width="100%"
+                         disabled="@load(vm.formUser.id ne null)"/>
+            </div>
+
+            <div sclass="form-group">
+                <label value="Full Name" sclass="form-label"/>
+                <textbox value="@bind(vm.formUser.fullName)"
+                         placeholder="Enter full name"
+                         sclass="form-input"
+                         width="100%"/>
+            </div>
+
+            <div sclass="form-group">
+                <label value="Email Address" sclass="form-label"/>
+                <textbox value="@bind(vm.formUser.email)"
+                         placeholder="user@example.com"
+                         sclass="form-input"
+                         width="100%"/>
+            </div>
+
+            <div sclass="form-group">
+                <label value="Password" sclass="form-label"/>
+                <textbox value="@bind(vm.formUser.password)"
+                         type="password"
+                         placeholder="Enter password"
+                         sclass="form-input"
+                         width="100%"/>
+            </div>
+
+            <div sclass="form-group">
+                <label value="Roles / Responsibilities" sclass="form-label"/>
+                <hlayout spacing="15px" style="padding: 4px 0;" children="@load(vm.availableRoles)">
+                    <template name="children" var="role">
+                        <checkbox label="@load(role)" 
+                                  checked="@load(vm.hasRole(role))"
+                                  onCheck="@command('toggleRole', role=role)" />
+                    </template>
+                </hlayout>
+            </div>
+
+            <div sclass="form-group">
+                <hlayout valign="middle" spacing="8px">
+                    <checkbox checked="@bind(vm.formUser.active)"/>
+                    <label value="Account Active" sclass="form-label" style="margin-bottom:0; cursor:pointer;"/>
+                </hlayout>
+            </div>
+
+            <separator/>
+
+            <hlayout spacing="10px" style="justify-content:flex-end;padding-top:8px;">
+                <button label="Cancel"
+                        sclass="btn-outline"
+                        onClick="@command('cancelForm')"/>
+                <button label="Save User"
+                        sclass="btn-primary"
+                        onClick="@command('saveUser')"/>
+            </hlayout>
+
+        </vlayout>
+
+    </window>
+
+</window>

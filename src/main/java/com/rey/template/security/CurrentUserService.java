@@ -2,11 +2,14 @@ package com.rey.template.security;
 
 import com.rey.template.dto.MenuDTO;
 import com.rey.template.dto.ResponsibilityDTO;
+import com.rey.template.repository.MstUserRepository;
+import com.rey.template.repository.RelUserRoleRepository;
 import com.rey.template.service.MenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CurrentUserService {
@@ -15,41 +18,47 @@ public class CurrentUserService {
     private UserSession userSession;
 
     @Autowired
+    private MstUserRepository userRepository;
+
+    @Autowired
+    private RelUserRoleRepository userRoleRepository;
+
+    @Autowired
     private MenuService menuService;
 
-    public void loginAsAdmin() {
+    public void login(String username, String password) {
+        if (username == null || username.trim().isEmpty() || password == null || password.trim().isEmpty()) {
+            throw new RuntimeException("Username and password cannot be empty");
+        }
 
-        userSession.setUsername("REY");
-        userSession.setFullName("Reynard A");
+        var mstUser = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        userSession.setResponsibilities(
-                List.of(
-                        new ResponsibilityDTO("ADMIN", "Administrator"),
-                        new ResponsibilityDTO("MAKER", "Maker")
-                )
+        if (!mstUser.getPassword().equals(password)) {
+            throw new RuntimeException("Incorrect password");
+        }
+
+        if (mstUser.getActive() != null && !mstUser.getActive()) {
+            throw new RuntimeException("User is inactive");
+        }
+
+        var userRoles = userRoleRepository.findByUserUsername(username);
+        System.out.println(
+                "roles = " + userRoles.size()
         );
 
-        userSession.setCurrentResponsibility(
-                userSession.getResponsibilities().getFirst()
-        );
+        if (userRoles.isEmpty()) {
+            throw new RuntimeException("User has no roles/responsibilities assigned");
+        }
 
-    }
+        List<ResponsibilityDTO> responsibilities = userRoles.stream()
+                .map(ur -> new ResponsibilityDTO(ur.getRole().getRoleCode(), ur.getRole().getRoleName()))
+                .collect(Collectors.toList());
 
-    public void loginAsMaker() {
-
-        userSession.setUsername("REY Maker");
-        userSession.setFullName("Reynard Maker");
-
-        userSession.setResponsibilities(
-                List.of(
-                        new ResponsibilityDTO("MAKER", "Maker")
-                )
-        );
-
-        userSession.setCurrentResponsibility(
-                userSession.getResponsibilities().getFirst()
-        );
-
+        userSession.setUsername(mstUser.getUsername());
+        userSession.setFullName(mstUser.getFullName());
+        userSession.setResponsibilities(responsibilities);
+        userSession.setCurrentResponsibility(responsibilities.getFirst());
     }
 
     public boolean isLoggedIn() {

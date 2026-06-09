@@ -30,20 +30,32 @@
                         font-weight:bold;"/>
 
                 <label
-                        value="Dummy Login"
+                        value="Please sign in to your account"
                         style="color:gray;"/>
 
                 <separator/>
 
-                <button
+                <textbox
+                        placeholder="Username"
+                        value="@bind(vm.username)"
                         width="100%"
-                        label="Login as Admin"
-                        onClick="@command('loginAsAdmin')"/>
+                        style="padding: 10px; border-radius: 6px; border: 1.5px solid #e2e8f0; font-size: 14px;"/>
+
+                <textbox
+                        placeholder="Password"
+                        type="password"
+                        value="@bind(vm.password)"
+                        width="100%"
+                        style="padding: 10px; border-radius: 6px; border: 1.5px solid #e2e8f0; font-size: 14px;"
+                        onOK="@command('login')"/>
+
+                <separator spacing="5px"/>
 
                 <button
                         width="100%"
-                        label="Login as Maker"
-                        onClick="@command('loginAsMaker')"/>
+                        label="Sign In"
+                        onClick="@command('login')"
+                        style="padding: 10px; border-radius: 8px; background: linear-gradient(135deg, #6366f1, #818cf8); color: white; border: none; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(99, 102, 241, .2);"/>
 
             </vlayout>
 

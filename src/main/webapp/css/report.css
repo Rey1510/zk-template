@@ -1,35 +1,78 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 /* =========================================
-   REPORT HEADER
+   BASE
+   ========================================= */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body,
+.z-label,
+.z-textbox,
+.z-combobox,
+.z-button {
+    font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* =========================================
+   REPORT HEADER  (compact)
    ========================================= */
 
 .report-header {
-    padding-bottom: 5px;
+    padding-bottom: 2px;
 }
 
 .report-title {
-    font-size: 24px;
-    font-weight: 600;
-    color: #1f2937;
+    display: block;
+    font-size: 20px;
+    font-weight: 700;
+    color: #0f172a;
+    letter-spacing: -0.4px;
+    line-height: 1.2;
 }
 
 .report-subtitle {
-    font-size: 13px;
-    color: #6b7280;
+    display: block;
+    font-size: 12px;
+    color: #64748b;
+    margin-top: 2px;
 }
 
-
 /* =========================================
-   DASHBOARD CARD
+   DASHBOARD CARD  (shared)
    ========================================= */
 
 .dashboard-card {
-    padding: 20px;
-    background: #fff;
-    border: 1px solid #eef2f7;
+    background: #ffffff;
+    border: 1px solid #e8edf5;
     border-radius: 14px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, .05);
+    box-shadow: 0 2px 12px rgba(15, 23, 42, .05);
 }
 
+/* =========================================
+   CHART CARD  (compact horizontal strip)
+   ========================================= */
+
+.chart-card {
+    padding: 8px 20px;
+}
+
+.chart-section {
+    display: flex;
+    align-items: center;
+}
+
+/* Vertical divider between donut and legend pills */
+.chart-divider {
+    width: 1px;
+    height: 45px;
+    background: #e2e8f0;
+    flex-shrink: 0;
+}
 
 /* =========================================
    DONUT CHART
@@ -37,63 +80,71 @@
 
 .report-donut {
     overflow: visible;
+    display: block;
 }
 
 .report-donut .donut-segment {
-    transition:
-        stroke-width .25s ease,
-        opacity .25s ease;
+    transition: stroke-width .25s ease, opacity .25s ease;
 }
 
 .report-donut .donut-active {
-
     opacity: 1;
-
     stroke-width: 6;
 }
 
 .report-donut .donut-inactive {
-
-    opacity: .60;
-
+    opacity: .35;
     stroke-width: 2.5;
 }
 
 /* =========================================
-   LEGEND
+   LEGEND PILLS  (horizontal row)
    ========================================= */
 
+.legend-row {
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
 .legend-card {
-    min-width: 220px;
-    padding: 14px 18px;
+    padding: 8px 14px;
     cursor: pointer;
-    background: #fff;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    transition: all .2s ease;
+    background: #f8fafd;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 20px;
+    transition: all .18s ease;
+    white-space: nowrap;
 }
 
 .legend-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(15, 23, 42, .08);
+    background: #fff;
+    border-color: #a5b4fc;
+    box-shadow: 0 3px 10px rgba(99, 102, 241, .12);
+    transform: translateY(-1px);
 }
 
 .legend-selected {
-    border: 2px solid #3b82f6;
-    transform: translateY(-2px);
-    box-shadow: 0 10px 24px rgba(59, 130, 246, .15);
+    background: #eef2ff;
+    border-color: #6366f1;
+    box-shadow: 0 3px 12px rgba(99, 102, 241, .20);
+    transform: translateY(-1px);
 }
 
 .legend-dimmed {
-    opacity: .45;
-    filter: grayscale(.15);
+    opacity: .40;
+    filter: grayscale(.2);
+}
+
+.legend-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #334155;
 }
 
 .legend-dot {
-    width: 12px;
-    height: 12px;
+    width: 10px;
+    height: 10px;
     flex-shrink: 0;
-    margin-right: 10px;
     border-radius: 50%;
 }
 
@@ -113,43 +164,283 @@
     background: #e5989b;
 }
 
+/* =========================================
+   TABLE CARD
+   ========================================= */
+
+.table-card {
+    padding: 12px 20px;
+    display: flex;
+    flex-direction: column;
+}
 
 /* =========================================
-   REPORT TABLE
+   TABLE TOOLBAR
+   ========================================= */
+
+.table-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+
+.table-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #0f172a;
+}
+
+/* =========================================
+   BUTTONS
+   ========================================= */
+
+.btn-primary {
+    padding: 8px 18px;
+    background: linear-gradient(135deg, #6366f1, #818cf8);
+    color: #fff !important;
+    border: none;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform .15s ease, box-shadow .15s ease;
+    box-shadow: 0 3px 10px rgba(99, 102, 241, .30);
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 16px rgba(99, 102, 241, .40);
+}
+
+.btn-outline {
+    padding: 7px 16px;
+    background: #fff;
+    color: #475569;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all .15s ease;
+}
+
+.btn-outline:hover {
+    border-color: #6366f1;
+    color: #6366f1;
+    background: #f5f5ff;
+}
+
+.btn-sm {
+    padding: 4px 12px;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all .15s ease;
+}
+
+.btn-sm.btn-outline {
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+    padding: 4px 12px;
+}
+
+.btn-sm.btn-outline:hover {
+    background: #e0e7ff;
+    color: #6366f1;
+    border-color: #c7d2fe;
+}
+
+.btn-sm.btn-danger {
+    background: #fff1f2;
+    color: #e11d48;
+    border: 1px solid #fecdd3;
+}
+
+.btn-sm.btn-danger:hover {
+    background: #ffe4e6;
+    border-color: #fda4af;
+}
+
+/* =========================================
+   REPORT TABLE / GRID
    ========================================= */
 
 .modern-grid {
     width: 100%;
-    border: none;
+    border: none !important;
     background: #fff;
 }
 
+.modern-grid .z-columns,
 .modern-grid .z-column {
-    background: #f5f8fc;
-    border: none;
-    border-bottom: 2px solid #dce6f2;
+    background: linear-gradient(to bottom, #f8fafd, #f1f5f9);
+    border: none !important;
+    border-bottom: 2px solid #e2e8f0 !important;
 }
 
 .modern-grid .z-column-content {
-    font-size: 13px;
-    font-weight: 600;
-    color: #0054a6;
+    font-size: 11px;
+    font-weight: 700;
+    color: #64748b;
     text-transform: uppercase;
+    letter-spacing: 0.7px;
+    padding: 10px 14px;
 }
 
 .modern-grid .z-row {
-    transition: background .2s ease;
+    animation: rowFadeIn .25s ease both;
+    transition: background .18s ease;
 }
 
 .modern-grid .z-row:hover {
-    background: #f7fbff;
+    background: #f5f7ff !important;
 }
 
 .modern-grid .z-row-content {
-    height: 46px;
-    border-bottom: 1px solid #eef2f7;
+    height: 38px;
+    border-bottom: 1px solid #f1f5f9 !important;
 }
 
 .modern-grid .z-cell {
     border: none !important;
+    vertical-align: middle;
+    padding: 0 14px;
+    font-size: 12px;
+}
+
+.modern-grid .z-label {
+    font-size: 12px;
+}
+
+/* Pagination bar */
+.modern-grid .z-paging {
+    border-top: 1px solid #e8edf5;
+    padding: 8px 14px;
+    background: #fafbfd;
+    border-radius: 0 0 12px 12px;
+    font-size: 12px;
+    color: #64748b;
+}
+
+.report-name-cell {
+    font-weight: 500;
+    color: #1e293b;
+}
+
+@keyframes rowFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =========================================
+   STATUS BADGES
+   ========================================= */
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+}
+
+.status-badge .z-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: inherit;
+    line-height: 1;
+}
+
+.badge-success {
+    background: #dcfce7;
+    color: #15803d;
+    border: 1px solid #bbf7d0;
+}
+
+.badge-pending {
+    background: #fef9c3;
+    color: #a16207;
+    border: 1px solid #fde68a;
+}
+
+.badge-failed {
+    background: #ffe4e6;
+    color: #be123c;
+    border: 1px solid #fecdd3;
+}
+
+/* =========================================
+   CRUD MODAL
+   ========================================= */
+
+.crud-modal {
+    border-radius: 16px !important;
+    overflow: hidden;
+    box-shadow: 0 25px 60px rgba(15, 23, 42, .20) !important;
+}
+
+.crud-modal .z-window-header {
+    background: linear-gradient(135deg, #6366f1, #818cf8) !important;
+    color: #fff !important;
+    font-weight: 600;
+    font-size: 15px;
+    padding: 14px 20px;
+    border: none !important;
+}
+
+.crud-modal .z-window-close {
+    color: rgba(255, 255, 255, .8) !important;
+}
+
+.crud-modal .z-window-close:hover {
+    color: #fff !important;
+}
+
+.modal-body {
+    padding: 22px 24px;
+    background: #fff;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 6px;
+}
+
+.form-input {
+    border-radius: 10px !important;
+    border: 1.5px solid #e2e8f0 !important;
+    padding: 9px 12px !important;
+    font-size: 14px !important;
+    color: #0f172a !important;
+    transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+.form-input:focus {
+    border-color: #6366f1 !important;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, .15) !important;
+    outline: none;
 }
