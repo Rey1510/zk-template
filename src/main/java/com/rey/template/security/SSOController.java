@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
+import jakarta.servlet.http.HttpServletRequest;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 @Controller
 public class SSOController {
@@ -30,6 +33,9 @@ public class SSOController {
     @Value("${sso.keycloak.redirect-uri}")
     private String redirectUri;
 
+    @Value("${sso.keycloak.logout-url}")
+    private String logoutUrl;
+
     private final CurrentUserService currentUserService;
     private final RestTemplate restTemplate = new RestTemplate();
 
@@ -41,8 +47,7 @@ public class SSOController {
     public String callback(
             @RequestParam(value = "code", required = false) String code,
             @RequestParam(value = "error", required = false) String error,
-            @RequestParam(value = "error_description", required = false) String errorDescription
-    ) {
+            @RequestParam(value = "error_description", required = false) String errorDescription) {
         if (error != null || code == null) {
             System.err.println("SSO authentication error: " + error + " - " + errorDescription);
             return "redirect:" + UrlConstant.URL_LOGIN_ZUL + "?error=sso_failed";
@@ -70,6 +75,7 @@ public class SSOController {
             }
 
             Map<String, Object> tokenBody = response.getBody();
+            System.out.println("SSO Token Response: " + tokenBody);
             String accessToken = (String) tokenBody.get("access_token");
             if (accessToken == null) {
                 throw new RuntimeException("Access token is missing in token response");
@@ -84,14 +90,14 @@ public class SSOController {
                     userinfoUrl,
                     HttpMethod.GET,
                     userinfoRequest,
-                    Map.class
-            );
+                    Map.class);
 
             if (userinfoResponse.getStatusCode() != HttpStatus.OK || userinfoResponse.getBody() == null) {
                 throw new RuntimeException("Failed to fetch user info from Keycloak");
             }
 
             Map<String, Object> userinfoBody = userinfoResponse.getBody();
+            System.out.println("SSO UserInfo Response: " + userinfoBody.get("access_token"));
             String username = (String) userinfoBody.get("preferred_username");
             if (username == null) {
                 username = (String) userinfoBody.get("sub");
@@ -109,6 +115,22 @@ public class SSOController {
         } catch (Exception e) {
             e.printStackTrace();
             return "redirect:" + UrlConstant.URL_LOGIN_ZUL + "?error=" + e.getMessage();
+        }
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request) {
+        currentUserService.logout();
+        if (request.getSession() != null) {
+            request.getSession().invalidate();
+        }
+        try {
+            return "redirect:" + logoutUrl
+                    + "?client_id=" + clientId
+                    + "&post_logout_redirect_uri="
+                    + URLEncoder.encode("http://localhost:8080/login.zul", StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            return "redirect:/";
         }
     }
 }

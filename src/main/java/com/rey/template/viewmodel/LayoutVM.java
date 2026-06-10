@@ -97,11 +97,7 @@ public class LayoutVM extends BaseVM {
 
     @Command
     public void logout() {
-
-        currentUserService.logout();
-
-        Executions.sendRedirect(
-                UrlConstant.URL_LOGIN_ZUL);
+        Executions.sendRedirect("/logout");
     }
 
     @Command

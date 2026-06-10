@@ -42,6 +42,7 @@ public class AuthenticationFilter implements Filter {
         String uri = req.getRequestURI();
 
         boolean callbackPage = uri.contains("/login/oauth2/code/keycloak");
+        boolean logoutPage = uri.contains("/logout");
 
         boolean staticResource =
                 uri.contains("/zkau")
@@ -62,7 +63,7 @@ public class AuthenticationFilter implements Filter {
             return;
         }
 
-        if (callbackPage) {
+        if (callbackPage || logoutPage) {
             chain.doFilter(request, response);
             return;
         }
