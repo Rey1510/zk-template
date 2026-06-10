@@ -133,19 +133,39 @@ INSERT INTO zktmp.report (report_name, status, created_by, created_date) VALUES
 
 ## 🔑 Authentication & Navigation Flow
 
-The security mapping and menu rendering model utilizes a **Role-Based Access Control (RBAC)** architecture:
+The security mapping and menu rendering model utilizes a **Role-Based Access Control (RBAC)** architecture integrated with Keycloak Single Sign-On (SSO):
 
 ```mermaid
-graph TD
-    A[MstUser] -->|has many| B[RelUserRole]
-    B -->|links| C[MstRole]
-    C -->|has many| D[RelRoleMenu]
-    D -->|links| E[MstMenu]
+sequenceDiagram
+    actor User
+    participant App as ZK Application
+    participant Filter as AuthenticationFilter
+    participant Keycloak as Keycloak Server
+    participant Controller as SSOController
+    participant DB as PostgreSQL Database
+
+    User->>App: Access App (e.g. /)
+    App->>Filter: Check Session
+    Note over Filter: User not logged in?
+    Filter-->>User: Redirect to Keycloak Auth Screen
+    User->>Keycloak: Enter Credentials
+    Keycloak-->>User: Redirect to Callback with Auth Code
+    User->>Controller: GET /login/oauth2/code/keycloak?code=XYZ
+    Controller->>Keycloak: POST /token (Exchange Code)
+    Keycloak-->>Controller: Return Access, ID & Refresh Tokens
+    Controller->>Keycloak: GET /userinfo (Bearer Token)
+    Keycloak-->>Controller: Return User Profile (preferred_username)
+    Controller->>DB: Query MstUser & Roles by Username
+    DB-->>Controller: Return User details & Assigned Roles
+    Note over Controller: Establish local UserSession & store ID Token
+    Controller-->>User: Redirect to main page (/layout/main.zul)
 ```
 
-### 1. User Authenticating
-- A user signs in using their credentials (e.g. `admin` / `admin123`).
-- **`CurrentUserService`** checks the database via **`MstUserRepository`** to verify that the username exists, the password matches (plain-text comparison), and the account is active.
+### 1. User Authenticating (SSO Flow)
+- Unauthenticated requests are intercepted by **`AuthenticationFilter`** and redirected to Keycloak's login screen (`/realms/demo/protocol/openid-connect/auth`).
+- After successful credentials input, Keycloak redirects the user back to the application callback `/login/oauth2/code/keycloak` with an authorization code.
+- **`SSOController`** exchanges this code for access and ID tokens, calls Keycloak's `/userinfo` endpoint to fetch the user's `preferred_username`, and initiates a passwordless login locally via `CurrentUserService.loginSso(username)`.
+- Keycloak username lookup matches the `mst_user` table in the database to verify active status and load assigned roles.
 
 ### 2. Role Resolution (Responsibilities)
 - Upon successful authentication, **`RelUserRoleRepository`** is queried to find all active roles associated with that user.
@@ -156,6 +176,12 @@ graph TD
 - The sidebar or main layout queries **`MenuService`** for the list of available menus.
 - **`MenuServiceImpl`** fetches active menus using **`RelRoleMenuRepository`** based on the currently selected role.
 - Menus are ordered sequentially using the `menu_order` field.
+
+### 4. Direct Logout
+- Clicking logout triggers `/logout` which invalidates the local session, retrieves the stored `id_token` from the session, and redirects to Keycloak's logout endpoint with `id_token_hint` and `post_logout_redirect_uri` to cleanly terminate the SSO session without prompting confirmation.
+
+### 5. Idle Timeout
+- The local HTTP session is configured to expire after 10 minutes of inactivity via `server.servlet.session.timeout=10m` in [application.properties](file:///d:/Project/Rey/zk-template/src/main/resources/application.properties). Once expired, the user will be prompted to re-authenticate on Keycloak on their next request.
 
 ---
 
@@ -170,4 +196,4 @@ Ensure you have **Java 21** installed, then run:
 # Launch the Spring Boot application
 ./mvnw spring-boot:run
 ```
-Open **`http://localhost:8080/login.zul`** in your browser.
+Open **`http://localhost:8080/`** in your browser. You will be automatically redirected to your Keycloak SSO login page.

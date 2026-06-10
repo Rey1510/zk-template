@@ -47,7 +47,8 @@ public class SSOController {
     public String callback(
             @RequestParam(value = "code", required = false) String code,
             @RequestParam(value = "error", required = false) String error,
-            @RequestParam(value = "error_description", required = false) String errorDescription) {
+            @RequestParam(value = "error_description", required = false) String errorDescription,
+            HttpServletRequest request) {
         if (error != null || code == null) {
             System.err.println("SSO authentication error: " + error + " - " + errorDescription);
             return "redirect:" + UrlConstant.URL_LOGIN_ZUL + "?error=sso_failed";
@@ -67,8 +68,8 @@ public class SSOController {
                 body.add("client_secret", clientSecret);
             }
 
-            HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(body, headers);
-            ResponseEntity<Map> response = restTemplate.postForEntity(tokenUrl, request, Map.class);
+            HttpEntity<MultiValueMap<String, String>> tokenRequest = new HttpEntity<>(body, headers);
+            ResponseEntity<Map> response = restTemplate.postForEntity(tokenUrl, tokenRequest, Map.class);
 
             if (response.getStatusCode() != HttpStatus.OK || response.getBody() == null) {
                 throw new RuntimeException("Failed to exchange code for token");
@@ -79,6 +80,10 @@ public class SSOController {
             String accessToken = (String) tokenBody.get("access_token");
             if (accessToken == null) {
                 throw new RuntimeException("Access token is missing in token response");
+            }
+            String idToken = (String) tokenBody.get("id_token");
+            if (idToken != null) {
+                request.getSession().setAttribute("id_token", idToken);
             }
 
             // 2. Retrieve User Details from Userinfo Endpoint
@@ -120,15 +125,20 @@ public class SSOController {
 
     @GetMapping("/logout")
     public String logout(HttpServletRequest request) {
-        currentUserService.logout();
+        String idToken = null;
         if (request.getSession() != null) {
+            idToken = (String) request.getSession().getAttribute("id_token");
             request.getSession().invalidate();
         }
+        currentUserService.logout();
         try {
-            return "redirect:" + logoutUrl
-                    + "?client_id=" + clientId
-                    + "&post_logout_redirect_uri="
+            String redirectUrl = logoutUrl + "?client_id=" + clientId;
+            if (idToken != null) {
+                redirectUrl += "&id_token_hint=" + idToken;
+            }
+            redirectUrl += "&post_logout_redirect_uri="
                     + URLEncoder.encode("http://localhost:8080/login.zul", StandardCharsets.UTF_8);
+            return "redirect:" + redirectUrl;
         } catch (Exception e) {
             return "redirect:/";
         }

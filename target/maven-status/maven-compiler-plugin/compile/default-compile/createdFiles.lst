@@ -30,6 +30,7 @@ com\rey\template\viewmodel\LayoutVM.class
 com\rey\template\viewmodel\common\AuthorizedVM.class
 com\rey\template\viewmodel\pages\ReportVM.class
 com\rey\template\entity\Report$ReportBuilder.class
+com\rey\template\security\SSOController.class
 com\rey\template\util\FormTitleConverter.class
 com\rey\template\service\UserService.class
 com\rey\template\HomeController.class
