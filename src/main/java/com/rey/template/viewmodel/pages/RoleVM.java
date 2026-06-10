@@ -48,12 +48,13 @@ public class RoleVM extends AuthorizedVM {
     }
 
     @Command
-    @NotifyChange("filteredRoles")
+    @NotifyChange({"filteredRoles", "pagedRoles", "hasPrev", "hasNext", "pagingInfo", "currentPageDisplay"})
     public void search() {
         applyFilter();
     }
 
     private void applyFilter() {
+        activePage = 0;
         if (searchKeyword == null || searchKeyword.trim().isEmpty()) {
             filteredRoles = new ArrayList<>(roles);
         } else {
@@ -93,7 +94,7 @@ public class RoleVM extends AuthorizedVM {
     }
 
     @Command
-    @NotifyChange({"roles", "filteredRoles", "showForm"})
+    @NotifyChange({"roles", "filteredRoles", "pagedRoles", "hasPrev", "hasNext", "pagingInfo", "currentPageDisplay", "showForm"})
     public void saveRole() {
         roleService.save(formRole);
         loadRoles();
@@ -101,7 +102,7 @@ public class RoleVM extends AuthorizedVM {
     }
 
     @Command
-    @NotifyChange({"roles", "filteredRoles"})
+    @NotifyChange({"roles", "filteredRoles", "pagedRoles", "hasPrev", "hasNext", "pagingInfo", "currentPageDisplay"})
     public void deleteRole(@BindingParam("id") Long id) {
         roleService.delete(id);
         loadRoles();
@@ -135,4 +136,58 @@ public class RoleVM extends AuthorizedVM {
     public void setFormRole(RoleDTO formRole) { this.formRole = formRole; }
 
     public List<MenuManagementDTO> getAvailableMenus() { return availableMenus; }
+
+    // =========================================================
+    // Custom Pagination
+    // =========================================================
+    private int activePage = 0;
+    private final int pageSize = 5;
+
+    public List<RoleDTO> getPagedRoles() {
+        int start = activePage * pageSize;
+        int end = Math.min(start + pageSize, filteredRoles.size());
+        if (start > filteredRoles.size() || start < 0) {
+            return new ArrayList<>();
+        }
+        return filteredRoles.subList(start, end);
+    }
+
+    public boolean isHasPrev() {
+        return activePage > 0;
+    }
+
+    public boolean isHasNext() {
+        return (activePage + 1) * pageSize < filteredRoles.size();
+    }
+
+    public String getPagingInfo() {
+        if (filteredRoles.isEmpty()) {
+            return "No items to display";
+        }
+        int start = activePage * pageSize + 1;
+        int end = Math.min(start + pageSize - 1, filteredRoles.size());
+        return "Showing " + start + " - " + end + " of " + filteredRoles.size();
+    }
+
+    public String getCurrentPageDisplay() {
+        int totalPages = (int) Math.ceil((double) filteredRoles.size() / pageSize);
+        if (totalPages == 0) totalPages = 1;
+        return (activePage + 1) + " / " + totalPages;
+    }
+
+    @Command
+    @NotifyChange({"pagedRoles", "hasPrev", "hasNext", "pagingInfo", "currentPageDisplay"})
+    public void nextPage() {
+        if (isHasNext()) {
+            activePage++;
+        }
+    }
+
+    @Command
+    @NotifyChange({"pagedRoles", "hasPrev", "hasNext", "pagingInfo", "currentPageDisplay"})
+    public void prevPage() {
+        if (isHasPrev()) {
+            activePage--;
+        }
+    }
 }

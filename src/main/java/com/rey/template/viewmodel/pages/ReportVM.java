@@ -60,8 +60,8 @@ public class ReportVM extends AuthorizedVM {
 
     @Command
     @NotifyChange({
-            "filteredReports", "selectedStatus", "donutSvg",
-            "allStyle", "successStyle", "pendingStyle", "failedStyle"
+            "filteredReports", "pagedReports", "hasPrev", "hasNext", "pagingInfo", "currentPageDisplay",
+            "selectedStatus", "donutSvg", "allStyle", "successStyle", "pendingStyle", "failedStyle"
     })
     public void filter(@BindingParam("status") String status) {
         Status clicked = Status.valueOf(status);
@@ -75,8 +75,8 @@ public class ReportVM extends AuthorizedVM {
 
     @Command
     @NotifyChange({
-            "filteredReports", "selectedStatus", "donutSvg",
-            "allStyle", "successStyle", "pendingStyle", "failedStyle"
+            "filteredReports", "pagedReports", "hasPrev", "hasNext", "pagingInfo", "currentPageDisplay",
+            "selectedStatus", "donutSvg", "allStyle", "successStyle", "pendingStyle", "failedStyle"
     })
     public void showAll() {
         selectedStatus = null;
@@ -84,6 +84,7 @@ public class ReportVM extends AuthorizedVM {
     }
 
     private void applyFilter() {
+        activePage = 0;
         if (selectedStatus == null) {
             filteredReports = new ArrayList<>(reports);
         } else {
@@ -121,7 +122,7 @@ public class ReportVM extends AuthorizedVM {
 
     @Command
     @NotifyChange({
-            "reports", "filteredReports", "showForm",
+            "reports", "filteredReports", "pagedReports", "hasPrev", "hasNext", "pagingInfo", "currentPageDisplay", "showForm",
             "donutSvg", "allStyle", "successStyle", "pendingStyle", "failedStyle",
             "totalLabel", "successLabel", "pendingLabel", "failedLabel"
     })
@@ -134,7 +135,7 @@ public class ReportVM extends AuthorizedVM {
 
     @Command
     @NotifyChange({
-            "reports", "filteredReports",
+            "reports", "filteredReports", "pagedReports", "hasPrev", "hasNext", "pagingInfo", "currentPageDisplay",
             "donutSvg", "allStyle", "successStyle", "pendingStyle", "failedStyle",
             "totalLabel", "successLabel", "pendingLabel", "failedLabel"
     })
@@ -331,5 +332,59 @@ public class ReportVM extends AuthorizedVM {
         r.setReportName(dto.getName());
         r.setStatus(dto.getStatus());
         return r;
+    }
+
+    // =========================================================
+    // Custom Pagination
+    // =========================================================
+    private int activePage = 0;
+    private final int pageSize = 5;
+
+    public List<ReportDTO> getPagedReports() {
+        int start = activePage * pageSize;
+        int end = Math.min(start + pageSize, filteredReports.size());
+        if (start > filteredReports.size() || start < 0) {
+            return new ArrayList<>();
+        }
+        return filteredReports.subList(start, end);
+    }
+
+    public boolean isHasPrev() {
+        return activePage > 0;
+    }
+
+    public boolean isHasNext() {
+        return (activePage + 1) * pageSize < filteredReports.size();
+    }
+
+    public String getPagingInfo() {
+        if (filteredReports.isEmpty()) {
+            return "No items to display";
+        }
+        int start = activePage * pageSize + 1;
+        int end = Math.min(start + pageSize - 1, filteredReports.size());
+        return "Showing " + start + " - " + end + " of " + filteredReports.size();
+    }
+
+    public String getCurrentPageDisplay() {
+        int totalPages = (int) Math.ceil((double) filteredReports.size() / pageSize);
+        if (totalPages == 0) totalPages = 1;
+        return (activePage + 1) + " / " + totalPages;
+    }
+
+    @Command
+    @NotifyChange({"pagedReports", "hasPrev", "hasNext", "pagingInfo", "currentPageDisplay"})
+    public void nextPage() {
+        if (isHasNext()) {
+            activePage++;
+        }
+    }
+
+    @Command
+    @NotifyChange({"pagedReports", "hasPrev", "hasNext", "pagingInfo", "currentPageDisplay"})
+    public void prevPage() {
+        if (isHasPrev()) {
+            activePage--;
+        }
     }
 }

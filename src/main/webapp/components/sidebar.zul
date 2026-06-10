@@ -15,7 +15,7 @@
 
                 <button
                         width="100%"
-                        sclass="menu-button"
+                        sclass="@load(vm.currentPage eq each.url ? 'menu-button active' : 'menu-button')"
                         label="@load(each.name)"
                         onClick="@command('openMenu', menu=each)"/>
 

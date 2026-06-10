@@ -4,6 +4,7 @@ import com.rey.template.dto.Status;
 import com.rey.template.entity.Report;
 import com.rey.template.repository.ReportRepository;
 import com.rey.template.service.ReportService;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public List<Report> findAll() {
-        return reportRepository.findAll();
+        return reportRepository.findAll(Sort.by(org.springframework.data.domain.Sort.Direction.ASC, "id"));
     }
 
     @Override

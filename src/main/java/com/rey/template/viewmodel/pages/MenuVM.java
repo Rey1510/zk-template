@@ -40,12 +40,13 @@ public class MenuVM extends AuthorizedVM {
     }
 
     @Command
-    @NotifyChange("filteredMenus")
+    @NotifyChange({"filteredMenus", "pagedMenus", "hasPrev", "hasNext", "pagingInfo", "currentPageDisplay"})
     public void search() {
         applyFilter();
     }
 
     private void applyFilter() {
+        activePage = 0;
         if (searchKeyword == null || searchKeyword.trim().isEmpty()) {
             filteredMenus = new ArrayList<>(menus);
         } else {
@@ -90,7 +91,7 @@ public class MenuVM extends AuthorizedVM {
     }
 
     @Command
-    @NotifyChange({"menus", "filteredMenus", "showForm"})
+    @NotifyChange({"menus", "filteredMenus", "pagedMenus", "hasPrev", "hasNext", "pagingInfo", "currentPageDisplay", "showForm"})
     public void saveMenu() {
         menuService.save(formMenu);
         loadMenus();
@@ -98,7 +99,7 @@ public class MenuVM extends AuthorizedVM {
     }
 
     @Command
-    @NotifyChange({"menus", "filteredMenus"})
+    @NotifyChange({"menus", "filteredMenus", "pagedMenus", "hasPrev", "hasNext", "pagingInfo", "currentPageDisplay"})
     public void deleteMenu(@BindingParam("id") Long id) {
         menuService.delete(id);
         loadMenus();
@@ -115,4 +116,58 @@ public class MenuVM extends AuthorizedVM {
 
     public MenuManagementDTO getFormMenu() { return formMenu; }
     public void setFormMenu(MenuManagementDTO formMenu) { this.formMenu = formMenu; }
+
+    // =========================================================
+    // Custom Pagination
+    // =========================================================
+    private int activePage = 0;
+    private final int pageSize = 5;
+
+    public List<MenuManagementDTO> getPagedMenus() {
+        int start = activePage * pageSize;
+        int end = Math.min(start + pageSize, filteredMenus.size());
+        if (start > filteredMenus.size() || start < 0) {
+            return new ArrayList<>();
+        }
+        return filteredMenus.subList(start, end);
+    }
+
+    public boolean isHasPrev() {
+        return activePage > 0;
+    }
+
+    public boolean isHasNext() {
+        return (activePage + 1) * pageSize < filteredMenus.size();
+    }
+
+    public String getPagingInfo() {
+        if (filteredMenus.isEmpty()) {
+            return "No items to display";
+        }
+        int start = activePage * pageSize + 1;
+        int end = Math.min(start + pageSize - 1, filteredMenus.size());
+        return "Showing " + start + " - " + end + " of " + filteredMenus.size();
+    }
+
+    public String getCurrentPageDisplay() {
+        int totalPages = (int) Math.ceil((double) filteredMenus.size() / pageSize);
+        if (totalPages == 0) totalPages = 1;
+        return (activePage + 1) + " / " + totalPages;
+    }
+
+    @Command
+    @NotifyChange({"pagedMenus", "hasPrev", "hasNext", "pagingInfo", "currentPageDisplay"})
+    public void nextPage() {
+        if (isHasNext()) {
+            activePage++;
+        }
+    }
+
+    @Command
+    @NotifyChange({"pagedMenus", "hasPrev", "hasNext", "pagingInfo", "currentPageDisplay"})
+    public void prevPage() {
+        if (isHasPrev()) {
+            activePage--;
+        }
+    }
 }

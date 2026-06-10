@@ -10,6 +10,16 @@
     --primary-shadow-focus: rgba(12, 98, 145, 0.15);
     --primary-border-light: #b3d7ff;
     --primary-bg-hover: #EAF3FF;
+
+    /* Sidebar theme variables */
+    --sidebar-bg: #0c6291;
+    --sidebar-border: #0a4e73;
+    --sidebar-title-color: rgba(255, 255, 255, 0.6);
+    --sidebar-text: rgba(255, 255, 255, 0.85);
+    --sidebar-text-hover: #ffffff;
+    --sidebar-text-hover-bg: rgba(255, 255, 255, 0.15);
+    --sidebar-active-bg: #ffffff;
+    --sidebar-active-text: #0c6291;
 }
 
 .theme-spektra {
@@ -21,6 +31,16 @@
     --primary-shadow-focus: rgba(194, 30, 30, 0.15);
     --primary-border-light: #ffccd5;
     --primary-bg-hover: #FFEAEA;
+
+    /* Sidebar theme variables */
+    --sidebar-bg: #c21e1e;
+    --sidebar-border: #9b1818;
+    --sidebar-title-color: rgba(255, 255, 255, 0.6);
+    --sidebar-text: rgba(255, 255, 255, 0.85);
+    --sidebar-text-hover: #ffffff;
+    --sidebar-text-hover-bg: rgba(255, 255, 255, 0.15);
+    --sidebar-active-bg: #ffffff;
+    --sidebar-active-text: #c21e1e;
 }
 
 .theme-amitra {
@@ -32,6 +52,16 @@
     --primary-shadow-focus: rgba(12, 90, 48, 0.15);
     --primary-border-light: #c2f0c2;
     --primary-bg-hover: #EAFEEA;
+
+    /* Sidebar theme variables */
+    --sidebar-bg: #0c5a30;
+    --sidebar-border: #094424;
+    --sidebar-title-color: rgba(255, 255, 255, 0.6);
+    --sidebar-text: rgba(255, 255, 255, 0.85);
+    --sidebar-text-hover: #ffffff;
+    --sidebar-text-hover-bg: rgba(255, 255, 255, 0.15);
+    --sidebar-active-bg: #ffffff;
+    --sidebar-active-text: #0c5a30;
 }
 
 .astra-header {
@@ -41,30 +71,55 @@
 
 .astra-sidebar {
     height: 100%;
-    background: #F5F8FC;
-    padding: 15px;
-    border-right: 1px solid #D6E0EE;
+    background: var(--sidebar-bg, #F5F8FC);
+    padding: 20px 15px;
+    border-right: 1px solid var(--sidebar-border, #D6E0EE);
 }
 
 .menu-title {
-    color: var(--primary-color, #0054A6);
+    color: var(--sidebar-title-color, var(--primary-color, #0054A6));
     font-weight: bold;
-    font-size: 14px;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    padding-left: 12px;
+    text-transform: uppercase;
 }
 
 .z-button.menu-button {
     width: 100%;
     text-align: left;
-    background: white;
-    border: 1px solid #D6E0EE;
-    border-radius: 8px;
-    padding: 8px;
-    color: var(--primary-color, #0054A6);
+    background: transparent !important;
+    background-image: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 8px !important;
+    padding: 10px 16px !important;
+    color: var(--sidebar-text, #475569) !important;
+    font-size: 14px !important;
+    text-shadow: none !important;
+    transition: all 0.2s ease !important;
 }
 
 .z-button.menu-button:hover {
-    background: var(--primary-bg-hover, #EAF3FF);
-    border-color: var(--primary-color, #0054A6);
+    background: var(--sidebar-text-hover-bg, rgba(255, 255, 255, 0.1)) !important;
+    color: var(--sidebar-text-hover, #ffffff) !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.z-button.menu-button.active {
+    background: var(--sidebar-active-bg, white) !important;
+    color: var(--sidebar-active-text, var(--primary-color, #0054A6)) !important;
+    font-weight: bold !important;
+    border: none !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+}
+
+.z-button.menu-button.active:hover {
+    background: var(--sidebar-active-bg, white) !important;
+    color: var(--sidebar-active-text, var(--primary-color, #0054A6)) !important;
+    border: none !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
 }
 
 .logout-link {

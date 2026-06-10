@@ -50,7 +50,7 @@ public class MenuServiceImpl implements MenuService {
     @Override
     @Transactional(readOnly = true)
     public List<MenuManagementDTO> findAll() {
-        List<MstMenu> menus = menuRepository.findAll();
+        List<MstMenu> menus = menuRepository.findAll(org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.ASC, "menuId"));
         List<MenuManagementDTO> dtoList = new ArrayList<>();
         for (MstMenu m : menus) {
             dtoList.add(new MenuManagementDTO(

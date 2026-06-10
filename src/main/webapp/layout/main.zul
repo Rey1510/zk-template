@@ -12,8 +12,8 @@
                 <west size="240px">
                     <include src="/components/sidebar.zul"/>
                 </west>
-                <center>
-                    <include src="@load(vm.currentPage)"/>
+                <center style="padding: 16px; background: #F5F8FC; box-sizing: border-box;">
+                    <include src="@load(vm.currentPage)" vflex="1" hflex="1"/>
                 </center>
             </borderlayout>
         </div>

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window border="none"
         vflex="1"
-        style="height:100vh;box-sizing:border-box;padding:16px;"
+        hflex="1"
         viewModel="@id('vm')
                    @init('com.rey.template.viewmodel.pages.RoleVM')">
 
     <style src="/css/report.css"/>
 
-    <vlayout spacing="10px" vflex="1" style="height:100%;">
+    <vlayout spacing="10px" vflex="1">
 
         <!-- ======================================================
              HEADER
@@ -46,19 +46,17 @@
         <!-- ======================================================
              TABLE CARD
              ======================================================= -->
-        <div sclass="dashboard-card table-card" vflex="1">
-            <grid model="@load(vm.filteredRoles)"
-                  mold="paging"
-                  pageSize="5"
+        <vlayout sclass="dashboard-card table-card" vflex="1" spacing="0px">
+            <grid model="@load(vm.pagedRoles)"
                   vflex="1"
                   sclass="modern-grid">
 
                 <columns>
-                    <column label="ID"          width="60px"/>
-                    <column label="ROLE CODE"    width="160px"/>
-                    <column label="ROLE NAME"    width="220px"/>
-                    <column label="ASSIGNED MENUS"/>
-                    <column label="ACTIONS"     width="140px"/>
+                    <column label="ID"          width="60px"  align="center"/>
+                    <column label="ROLE CODE"    width="160px" align="center"/>
+                    <column label="ROLE NAME"    width="220px" align="center"/>
+                    <column label="ASSIGNED MENUS"             align="center"/>
+                    <column label="ACTIONS"     width="140px" align="center"/>
                 </columns>
 
                 <template name="model" var="row">
@@ -67,7 +65,7 @@
                         <label value="@load(row.roleCode)" sclass="report-name-cell"/>
                         <label value="@load(row.roleName)"/>
                         <label value="@load(row.menusDisplay)" style="font-size: 11px; font-weight: 500; color: #475569;"/>
-                        <hlayout spacing="6px">
+                        <hlayout spacing="6px" style="justify-content:center;">
                             <button label="Edit"
                                     sclass="btn-sm btn-outline"
                                     onClick="@command('openEdit', dto=row)"/>
@@ -79,7 +77,23 @@
                 </template>
 
             </grid>
-        </div>
+
+            <!-- Custom Pagination -->
+            <hlayout valign="middle" width="100%" style="padding: 10px 14px; border-top: 1px solid #e8edf5; background: #fafbfd; display: flex; align-items: center; border-radius: 0 0 14px 14px;">
+                <label value="@load(vm.pagingInfo)" style="font-size: 12px; color: #64748b; font-weight: 500;"/>
+                <space hflex="1"/>
+                <button label="Prev"
+                        sclass="btn-sm btn-outline"
+                        disabled="@load(not vm.hasPrev)"
+                        onClick="@command('prevPage')"/>
+                <label value="@load(vm.currentPageDisplay)" style="font-weight: 600; font-size: 12px; margin: 0 12px; color: #334155;"/>
+                <button label="Next"
+                        sclass="btn-sm btn-outline"
+                        disabled="@load(not vm.hasNext)"
+                        onClick="@command('nextPage')"/>
+            </hlayout>
+
+        </vlayout>
 
     </vlayout>
 

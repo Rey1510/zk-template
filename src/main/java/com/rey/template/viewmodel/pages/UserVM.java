@@ -43,12 +43,13 @@ public class UserVM extends AuthorizedVM {
     }
 
     @Command
-    @NotifyChange("filteredUsers")
+    @NotifyChange({"filteredUsers", "pagedUsers", "hasPrev", "hasNext", "pagingInfo", "currentPageDisplay"})
     public void search() {
         applyFilter();
     }
 
     private void applyFilter() {
+        activePage = 0;
         if (searchKeyword == null || searchKeyword.trim().isEmpty()) {
             filteredUsers = new ArrayList<>(users);
         } else {
@@ -94,7 +95,7 @@ public class UserVM extends AuthorizedVM {
 
     @Command
     @NotifyChange({
-        "users", "filteredUsers", "showForm",
+        "users", "filteredUsers", "pagedUsers", "hasPrev", "hasNext", "pagingInfo", "currentPageDisplay", "showForm",
         "donutSvg", "allStyle", "successStyle", "pendingStyle", "failedStyle",
         "totalLabel", "successLabel", "pendingLabel", "failedLabel"
     })
@@ -105,7 +106,7 @@ public class UserVM extends AuthorizedVM {
     }
 
     @Command
-    @NotifyChange({"users", "filteredUsers"})
+    @NotifyChange({"users", "filteredUsers", "pagedUsers", "hasPrev", "hasNext", "pagingInfo", "currentPageDisplay"})
     public void deleteUser(@BindingParam("id") Long id) {
         userService.delete(id);
         loadUsers();
@@ -139,4 +140,58 @@ public class UserVM extends AuthorizedVM {
     public void setFormUser(UserDTO formUser) { this.formUser = formUser; }
 
     public List<String> getAvailableRoles() { return availableRoles; }
+
+    // =========================================================
+    // Custom Pagination
+    // =========================================================
+    private int activePage = 0;
+    private final int pageSize = 5;
+
+    public List<UserDTO> getPagedUsers() {
+        int start = activePage * pageSize;
+        int end = Math.min(start + pageSize, filteredUsers.size());
+        if (start > filteredUsers.size() || start < 0) {
+            return new ArrayList<>();
+        }
+        return filteredUsers.subList(start, end);
+    }
+
+    public boolean isHasPrev() {
+        return activePage > 0;
+    }
+
+    public boolean isHasNext() {
+        return (activePage + 1) * pageSize < filteredUsers.size();
+    }
+
+    public String getPagingInfo() {
+        if (filteredUsers.isEmpty()) {
+            return "No items to display";
+        }
+        int start = activePage * pageSize + 1;
+        int end = Math.min(start + pageSize - 1, filteredUsers.size());
+        return "Showing " + start + " - " + end + " of " + filteredUsers.size();
+    }
+
+    public String getCurrentPageDisplay() {
+        int totalPages = (int) Math.ceil((double) filteredUsers.size() / pageSize);
+        if (totalPages == 0) totalPages = 1;
+        return (activePage + 1) + " / " + totalPages;
+    }
+
+    @Command
+    @NotifyChange({"pagedUsers", "hasPrev", "hasNext", "pagingInfo", "currentPageDisplay"})
+    public void nextPage() {
+        if (isHasNext()) {
+            activePage++;
+        }
+    }
+
+    @Command
+    @NotifyChange({"pagedUsers", "hasPrev", "hasNext", "pagingInfo", "currentPageDisplay"})
+    public void prevPage() {
+        if (isHasPrev()) {
+            activePage--;
+        }
+    }
 }
