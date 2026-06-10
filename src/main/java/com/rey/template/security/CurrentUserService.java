@@ -64,6 +64,33 @@ public class CurrentUserService {
         userSession.setCurrentResponsibility(responsibilities.getFirst());
     }
 
+    public void loginSso(String username) {
+        if (username == null || username.trim().isEmpty()) {
+            throw new RuntimeException("Username cannot be empty");
+        }
+
+        var mstUser = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found: " + username));
+
+        if (mstUser.getActive() != null && !mstUser.getActive()) {
+            throw new RuntimeException("User is inactive");
+        }
+
+        var userRoles = userRoleRepository.findByUserUsername(username);
+        if (userRoles.isEmpty()) {
+            throw new RuntimeException("User has no roles/responsibilities assigned");
+        }
+
+        List<ResponsibilityDTO> responsibilities = userRoles.stream()
+                .map(ur -> new ResponsibilityDTO(ur.getRole().getRoleCode(), ur.getRole().getRoleName()))
+                .collect(Collectors.toList());
+
+        userSession.setUsername(mstUser.getUsername());
+        userSession.setFullName(mstUser.getFullName());
+        userSession.setResponsibilities(responsibilities);
+        userSession.setCurrentResponsibility(responsibilities.getFirst());
+    }
+
     public boolean isLoggedIn() {
         return userSession.isLoggedIn();
     }

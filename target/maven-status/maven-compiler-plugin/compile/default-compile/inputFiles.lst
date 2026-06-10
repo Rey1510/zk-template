@@ -23,6 +23,7 @@ D:\Project\Rey\zk-template\src\main\java\com\rey\template\security\CurrentUserSe
 D:\Project\Rey\zk-template\src\main\java\com\rey\template\security\filter\AuthenticationFilter.java
 D:\Project\Rey\zk-template\src\main\java\com\rey\template\security\filter\FilterConfig.java
 D:\Project\Rey\zk-template\src\main\java\com\rey\template\security\PasswordHelper.java
+D:\Project\Rey\zk-template\src\main\java\com\rey\template\security\SSOController.java
 D:\Project\Rey\zk-template\src\main\java\com\rey\template\security\UserSession.java
 D:\Project\Rey\zk-template\src\main\java\com\rey\template\service\AuthorizationService.java
 D:\Project\Rey\zk-template\src\main\java\com\rey\template\service\impl\AuthorizationServiceImpl.java
